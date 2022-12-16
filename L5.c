@@ -5,11 +5,11 @@
 
 #define TIME_STEP 32
 double t = 0.0;         // elapsed simulation time
-
+double v = 6.28;        // max velocity
 
 void drive(WbDeviceTag rm, WbDeviceTag lm) {
-  wb_motor_set_velocity(rm, 6.28);
-  wb_motor_set_velocity(lm, 6.28);
+  wb_motor_set_velocity(rm, v);
+  wb_motor_set_velocity(lm, v);
 }
 
 
@@ -18,12 +18,12 @@ void stop(WbDeviceTag rm, WbDeviceTag lm) {
   wb_motor_set_velocity(lm, 0);
 } 
 
-void turnRight(WbDeviceTag rm, WbDeviceTag lm) {
+void turnLeft(WbDeviceTag rm, WbDeviceTag lm) {
   double time = 0.0;
   while (wb_robot_step(TIME_STEP) != -1) {
     if(time < 0.07) {
-      wb_motor_set_velocity(rm, 6.28);
-      wb_motor_set_velocity(lm, -6.28);
+      wb_motor_set_velocity(rm, v);
+      wb_motor_set_velocity(lm, -v);
     } else {
       wb_motor_set_velocity(rm, 0);
       wb_motor_set_velocity(lm, 0);
@@ -34,12 +34,12 @@ void turnRight(WbDeviceTag rm, WbDeviceTag lm) {
   }
 }
 
-void turnLeft(WbDeviceTag rm, WbDeviceTag lm) {
+void turnRight(WbDeviceTag rm, WbDeviceTag lm) {
   double time = 0.0;
   while (wb_robot_step(TIME_STEP) != -1) {
     if(time < 0.07) {
-      wb_motor_set_velocity(rm, -6.28);
-      wb_motor_set_velocity(lm, 6.28);
+      wb_motor_set_velocity(rm, -v);
+      wb_motor_set_velocity(lm, v);
     } else {
       wb_motor_set_velocity(rm, 0);
       wb_motor_set_velocity(lm, 0);
@@ -61,12 +61,12 @@ int followTheLine(WbDeviceTag rm, WbDeviceTag lm, int gl, int gc, int gr, double
   }
   
   if(gl < 350 && gc > 800 && gr > 800) {
-    turnRight(rm, lm);
+    turnLeft(rm, lm);
     return -1;
   }
   
   if(gl > 800 && gc > 800 && gr < 350) {
-    turnLeft(rm, lm);
+    turnRight(rm, lm);
     return -1;
   }
   
@@ -115,12 +115,13 @@ int main() {
     if(c < 0) {c = 0;}
     
     t += (double)TIME_STEP / 1000.0;
-    printf("left/center/right = %d/%d/%d\n", \
+    /*printf("left/center/right = %d/%d/%d\n", \
             gl, gc, gr);
-    printf("%i\n", c);
-    printf("%f\n", t);
+    printf("%i\n", c);*/
+    printf("%.2f\n", t);
   }
 
   wb_robot_cleanup();
   return 0;
+  
 }
